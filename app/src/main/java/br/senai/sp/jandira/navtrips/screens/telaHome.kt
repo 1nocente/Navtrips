@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -32,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,9 +42,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import br.senai.sp.jandira.navtrips.R
 import br.senai.sp.jandira.navtrips.ui.theme.NavTripsTheme
+import br.senai.sp.jandira.navtrips.ui.theme.simplificarData
+import br.senai.sp.jandira.viagem.repository.ViagemRepository
 
 @Composable
 fun telaHome(controleDeNavegacao: NavHostController) {
+
+    val viagens = ViagemRepository().listarTodasAsViagens(LocalContext.current)
 
     NavTripsTheme {
 
@@ -216,7 +222,7 @@ fun telaHome(controleDeNavegacao: NavHostController) {
                     .padding(15.dp))
 
                 LazyColumn{
-                    item(1){
+                    items(viagens){
                         Card (
                             modifier = Modifier
                                 .height(230.dp)
@@ -226,52 +232,38 @@ fun telaHome(controleDeNavegacao: NavHostController) {
                             colors = CardDefaults.cardColors(Color.White)
                         ) {
                             Column {
-                                Image(
-                                    painterResource(id = R.drawable.london),
-                                    contentDescription = "London",
+                                Surface {
+                                    Image(painter =if (it.imagem == null)
+                                        painterResource(id = R.drawable.freefire) else  it.imagem!!,
+                                        contentDescription = "",
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(125.dp))
+                                }
+                                Text(text = "${it.destino}," +
+                                        " ${it.dataPartida.year}",
+
+                                        color = Color.Magenta,
                                     modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(125.dp))
-
-                                Text(text = "London, 2019", color = Color.Magenta,
-                                    modifier = Modifier
-                                        .padding(start = 10.dp, top = 5.dp))
-                                Text(text = "London is the capital and largest city of  the United Kingdom, with a population of just under 9 million.",
-                                    fontSize = 12.sp, lineHeight = 10.sp, color = Color.Gray, modifier = Modifier
-                                        .padding(start = 10.dp))
-
-                                Text(text = "18 Feb - 21 Feb", fontSize = 12.sp, color = Color.Magenta, modifier = Modifier
-                                    .padding(start = 260.dp, top = 5.dp))
-                            }
+                                        .padding(start = 10.dp, top = 5.dp)
+                                )
+                                Text(text = it.descricao, fontSize = 12.sp, lineHeight = 10.sp, color = Color.Gray, modifier = Modifier
+                                    .padding(start = 10.dp))
+                                Row {
 
 
-                        }
-
-                        Card (
-                            modifier = Modifier
-                                .height(230.dp)
-                                .width(390.dp)
-                                .padding(10.dp)
-                                .shadow(20.dp),
-                            colors = CardDefaults.cardColors(Color.White)
-                        ) {
-                            Column {
-                                Image(
-                                    painterResource(id = R.drawable.porto),
-                                    contentDescription = "Porto",
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(125.dp))
-
-                                Text(text = "Porto, 2022", color = Color.Magenta,
-                                    modifier = Modifier
-                                        .padding(start = 10.dp, top = 5.dp))
-                                Text(text = "Porto is the second city in Portugal, the capital of the Oporto District, and one of the Iberian Peninsula's major urban areas.",
-                                    fontSize = 12.sp, lineHeight = 10.sp, color = Color.Gray, modifier = Modifier
-                                        .padding(start = 10.dp))
-
-                                Text(text = "18 Feb - 21 Feb", fontSize = 12.sp, color = Color.Magenta, modifier = Modifier
-                                    .padding(start = 260.dp, top = 5.dp))
+                                    Text(
+                                        text = simplificarData(it.dataChegada),
+                                        fontSize = 12.sp, color = Color.Magenta, modifier = Modifier
+                                            .padding(start = 230.dp, top = 5.dp)
+                                    )
+                                    Text(text = "  -  ")
+                                    Text(
+                                        text = simplificarData(it.dataPartida),
+                                        fontSize = 12.sp, color = Color.Magenta, modifier = Modifier
+                                            .padding(start = 0.dp, top = 5.dp)
+                                    )
+                                }
                             }
 
 
