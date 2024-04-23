@@ -1,13 +1,17 @@
 package br.senai.sp.jandira.navtrips.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -41,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import br.senai.sp.jandira.navtrips.R
+import br.senai.sp.jandira.navtrips.repository.Categoria
 import br.senai.sp.jandira.navtrips.ui.theme.NavTripsTheme
 import br.senai.sp.jandira.navtrips.ui.theme.simplificarData
 import br.senai.sp.jandira.viagem.repository.ViagemRepository
@@ -50,6 +55,8 @@ fun telaHome(controleDeNavegacao: NavHostController) {
 
     val viagens = ViagemRepository().listarTodasAsViagens(LocalContext.current)
 
+    val categorias = Categoria()
+        .listarTodasAsCategorias(LocalContext.current)
     NavTripsTheme {
 
         Surface {
@@ -133,69 +140,44 @@ fun telaHome(controleDeNavegacao: NavHostController) {
 
                 Text(text = "Categories", fontSize = 18.sp)
 
-                LazyRow{
-                    item(1){
-                        Card (
+                LazyRow() {
+                    items(categorias) {
+                        Card(
                             modifier = Modifier
-                                .height(90.dp)
-                                .width(130.dp)
-                                .padding(10.dp),
-                            colors = CardDefaults.cardColors(Color.Magenta)
-                        ){
-                            Column {
-                                Icon(imageVector = Icons.Default.Landscape, contentDescription ="Montanha",
-                                    tint = Color.White, modifier = Modifier
-                                        .padding(start = 40.dp, top = 10.dp))
-                                Text(text = "Mountain", color = Color.White, modifier = Modifier
-                                    .padding(start = 20.dp))
-                            }
-
-
-
-                        }
-                        Card (
-                            modifier = Modifier
-                                .height(90.dp)
-                                .width(130.dp)
-                                .padding(10.dp),
-                            colors = CardDefaults.cardColors(Color.Magenta)
+                                .height(92.dp)
+                                .width(135.dp)
+                                .padding(start = 10.dp, top = 12.dp),
+                            colors = CardDefaults
+                                .cardColors(containerColor = Color(0xFFCF06F0))
                         ) {
-                            Column {
-                                Icon(imageVector = Icons.Default.Snowboarding, contentDescription ="Neve",
-                                    tint = Color.White, modifier = Modifier
-                                        .padding(start = 40.dp, top = 10.dp))
-                                Text(text = "Snow", color = Color.White, modifier = Modifier
-                                    .padding(start = 35.dp))
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .fillMaxHeight(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            )
+                            {
+                                Image(
+                                    painter = it.imagem!!,
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .size(38.dp)
+
+                                )
+                                Text(
+                                    text = it.nome,
+                                    color = Color.White
+                                )
                             }
 
                         }
-                        Card (
-                            modifier = Modifier
-                                .height(90.dp)
-                                .width(130.dp)
-                                .padding(10.dp),
-                            colors = CardDefaults.cardColors(Color.Magenta)
-                        ) {
-                            Column {
-                                Icon(imageVector = Icons.Default.BeachAccess, contentDescription ="Praia",
-                                    tint = Color.White, modifier = Modifier
-                                        .padding(start = 40.dp, top = 10.dp))
-                                Text(text = "Beach", color = Color.White, modifier = Modifier
-                                    .padding(start = 30.dp))
-                            }
-
-                        }
-
-
-
-
-
-
-
                     }
                 }
 
-                OutlinedTextField(
+
+                Spacer(modifier = Modifier.height(16.dp))
+                    OutlinedTextField(
                     value = "",
                     onValueChange = {},
                     modifier = Modifier
