@@ -1,41 +1,52 @@
 package br.senai.sp.jandira.navtrips.screens
 
+import android.content.Intent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavHostController
+import br.senai.sp.jandira.navtrips.repository.UsuarioRepository
 import br.senai.sp.jandira.navtrips.ui.theme.NavTripsTheme
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun telaLogin(controleDeNavegacao: NavHostController) {
+fun TelaLogin(controleDeNavegacao: NavHostController) {
 
-    var usuarioState = remember {
+    var emailState = remember {
         mutableStateOf("")
     }
 
@@ -47,182 +58,208 @@ fun telaLogin(controleDeNavegacao: NavHostController) {
         mutableStateOf(false)
     }
 
-    var mensagemErroState = remember {
+    var mensagemErrorState = remember {
         mutableStateOf("")
     }
 
+    val ur = UsuarioRepository(LocalContext.current)
 
-    NavTripsTheme {
+    var todosOsContatos = ur.buscarTodosOsUsuarios()
 
-        Surface(modifier = Modifier
-            .fillMaxSize()) {
+    NavTripsTheme{
+        Surface (
+            modifier = Modifier.fillMaxSize(),
+            color = Color.White
+        ){
+            Column (
+                Modifier.fillMaxSize()
+            ){
+                Row (
+                    horizontalArrangement = Arrangement.End,
+                    modifier = Modifier.fillMaxWidth()
 
+                ){
+                    Box (
+                        Modifier
+                            .width(150.dp)
+                            .background(
+                                Color(0xffcf08ef),
+                                shape = RoundedCornerShape(bottomStart = 10.dp)
+                            )
+                            .height(50.dp)
+                    ){
 
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-
-            Column(
-                modifier = Modifier
-                    .height(height = 50.dp)
-                    .width(width = 160.dp)
-                    .background(
-                        color = Color(0xFFCF06F0),
-                        shape = RoundedCornerShape(0.dp, 0.dp, 0.dp, 20.dp)
-                    )
-                    .align(Alignment.End)
-            ) {
-
-            }
-
-            Text(
-                text = "Login",
-                fontSize = 55.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = Color(0xFFCF06F0),
-                modifier = Modifier
-                    .padding(top = 150.dp, start = 20.dp)
-            )
-
-            Text(
-                text = "Please sign in to continue.",
-                color = Color(0xFFA09C9C),
-                fontSize = 19.sp,
-                letterSpacing = 0.sp,
-                modifier = Modifier
-                    .padding(start = 20.dp)
-            )
-
-            OutlinedTextField(value = usuarioState.value,
-                onValueChange = { usuarioState.value = it },
-                isError = isErrorState.value,
-                label = { Text(text = "E-mail") },
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(top = 60.dp)
-                    .width(350.dp)
-                    .height(66.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedBorderColor = Color(0xFFCF06F0),
-                    focusedBorderColor = Color(0xFFCF06F0)
-                ),
-                shape = RoundedCornerShape(15.dp),
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Filled.Email, contentDescription = "",
-                        tint = Color(0xFFCF06F0)
-                    )
+                    }
                 }
-
-
-            )
-
-            OutlinedTextField(
-                value = senhaState.value, onValueChange = {senhaState.value = it},
-                isError = isErrorState.value,
-                label = { Text(text = "Password") },
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(top = 20.dp)
-                    .width(350.dp)
-                    .height(66.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedBorderColor = Color(0xFFCF06F0),
-                    focusedBorderColor = Color(0xFFCF06F0)
-
-                ),
-                shape = RoundedCornerShape(15.dp),
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Filled.Lock, contentDescription = "",
-                        tint = Color(0xFFCF06F0)
-                    )
-                }
-
-
-            )
-            Text(text = mensagemErroState.value,
-                color = Color.Red)
-
-            Button(
-                onClick = {if (usuarioState.value == "aluno" && senhaState.value == "1234") {
-                    controleDeNavegacao.navigate("home")
-
-                    //enviar para tela home
-                } else {
-                    isErrorState.value = true
-                    mensagemErroState.value = "Usuario ou senha inválidos"
-                }},
-                shape = RoundedCornerShape(20.dp),
-                colors = ButtonDefaults.buttonColors(Color(0xFFCF06F0)),
-                modifier = (Modifier
-                    .align(Alignment.End)
-                    .width(width = 160.dp)
-                    .height(height = 90.dp)
-                    .padding(top = 30.dp, end = 20.dp)
+                Spacer(modifier = Modifier.height(80.dp))
+                Column (
+                    modifier = Modifier.padding(10.dp)
+                ){
+                    Column {
+                        Text(
+                            text = "Login",
+                            fontSize = 60.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xffcf08ef)
                         )
-            ) {
-                Text(
-                    text = "SIGN IN ->", fontSize = 19.sp, fontWeight = FontWeight.ExtraBold
-                )
+                        Text(
+                            text = "Please sign in to continue",
+                            fontSize = 20.sp,
+                            color = Color.Gray
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(80.dp))
+                    Column (
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxWidth()
+                    ){
+                        OutlinedTextField(
+                            value = emailState.value,
+                            onValueChange = {
+                                emailState.value = it
+                            },
+                            isError = isErrorState.value,
+                            modifier = Modifier.width(400.dp),
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                unfocusedBorderColor = Color(0xffcf08ef),
+                                focusedBorderColor = Color(0xffcf08ef)
+                            ),
+                            shape = RoundedCornerShape(15.dp),
+                            label = {
+                                Text(text = "E-mail")
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Filled.Email,
+                                    contentDescription = "",
+                                    tint = Color(0xffcf08ef)
+                                )
+                            }
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
+                        OutlinedTextField(
+                            value = senhaState.value,
+                            onValueChange = {
+                                senhaState.value = it
+                            },
+                            isError = isErrorState.value,
+                            modifier = Modifier.width(400.dp),
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                unfocusedBorderColor = Color(0xffcf08ef),
+                                focusedBorderColor = Color(0xffcf08ef)
+                            ),
+                            shape = RoundedCornerShape(15.dp),
+                            label = {
+                                Text(text = "Password")
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Filled.Lock,
+                                    contentDescription = "",
+                                    tint = Color(0xffcf08ef)
+                                )
+                            }
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(40.dp))
+                    Column (
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.End
+                    ){
+                        Button(
+                            onClick = {
 
+                                var (usuarioEncontrado, dadosUsuario) = ur.buscarUsuarioPeloEmailSenha(emailState.value, senhaState.value)
 
-            }
-
-            Row {
-
-                Text(
-                    text = "Don't have an account?",
-                    color = Color(0xFFA09C9C),
-                    fontSize = 15.sp,
-                    letterSpacing = 0.sp,
-                    modifier = Modifier
-                        .padding(top = 20.dp, start = 160.dp)
-                )
-
-                Button(onClick = {controleDeNavegacao.navigate("Sign")}, colors = ButtonDefaults.buttonColors(Color.White),
-                    modifier = Modifier.padding(top = 7.dp)) {
-                    Text(
-                        text = "Sign up",
-                        color = Color(0xFFCF06F0),
-                        fontSize = 15.sp,
-                        letterSpacing = 0.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                    )
+                                if(usuarioEncontrado){
+                                    controleDeNavegacao.navigate("home")
+                                } else {
+                                    isErrorState.value = true
+                                    mensagemErrorState.value = "Usuário ou senha inválidos!"
+                                }
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xffcf08ef)),
+                            shape = RoundedCornerShape(20.dp),
+                            modifier = Modifier
+                                .height(60.dp)
+                                .width(160.dp)
+                        ){
+                            Row (
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center,
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .fillMaxWidth()
+                            ){
+                                Text(
+                                    text = "SIGN IN",
+                                    fontSize = 22.sp,
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Spacer(modifier = Modifier.width(10.dp))
+                                Icon(
+                                    imageVector = Icons.Filled.ArrowForward,
+                                    contentDescription = "",
+                                    tint = Color.White
+                                )
+                            }
+                        }
+                        Text(
+                            text = mensagemErrorState.value,
+                            color = Color.Red
+                        )
+                        Spacer(modifier = Modifier.height(0.dp))
+                        Row {
+                            Text(
+                                text = "Don't have an account?",
+                                color = Color.Gray
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = "Sign up",
+                                color = Color(0xffcf08ef),
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.clickable {
+                                    controleDeNavegacao.navigate("SignUp")
+                                }
+                            )
+                        }
+                    }
                 }
+                Row (
+                    verticalAlignment = Alignment.Bottom,
+                    horizontalArrangement = Arrangement.Start,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                ){
+                    Box (
+                        Modifier
+                            .width(150.dp)
+                            .background(
+                                Color(0xffcf08ef),
+                                shape = RoundedCornerShape(topEnd = 10.dp)
+                            )
+                            .height(50.dp)
+                    ){
 
+                    }
+                }
             }
-            Column(
-                modifier = Modifier
-                    .height(height = 50.dp)
-                    .width(width = 160.dp)
-                    .offset(y = 86.dp)
-                    .background(
-                        color = Color(0xFFCF06F0),
-                        shape = RoundedCornerShape(0.dp, 20.dp, 0.dp, 0.dp),
-                    )
-                    .align(Alignment.Start)
-            ) {
-
-            }
-        }
         }
     }
-
 }
 
-@Preview(showSystemUi = true)
+@Preview(showSystemUi = true, showBackground = true)
 @Composable
-fun telaLoginPreview() {
-
+fun TelaLoginPreview(){
     NavTripsTheme {
-        Surface(modifier = Modifier
-            .fillMaxSize()){
-
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = Color(0xFF03A9f4)
+        ) {
+//            TelaLogin()
         }
     }
-    //telaLogin(controleDeNavegacao)
-
 }

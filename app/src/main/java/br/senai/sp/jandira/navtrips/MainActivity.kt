@@ -10,9 +10,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import br.senai.sp.jandira.navtrips.screens.TelaLogin
+import br.senai.sp.jandira.navtrips.screens.TelaSignUp
 import br.senai.sp.jandira.navtrips.screens.telaHome
-import br.senai.sp.jandira.navtrips.screens.telaLogin
-import br.senai.sp.jandira.navtrips.screens.telaSignUp
 import br.senai.sp.jandira.navtrips.ui.theme.NavTripsTheme
 
 class MainActivity : ComponentActivity() {
@@ -25,8 +25,8 @@ class MainActivity : ComponentActivity() {
                 NavHost(navController = controleDeNavegacao,
                     startDestination = "login"
                 ){
-                    composable(route = "login"){ telaLogin(controleDeNavegacao)}
-                    composable(route = "Sign"){telaSignUp(controleDeNavegacao)}
+                    composable(route = "login"){ TelaLogin(controleDeNavegacao) }
+                    composable(route = "SignUp"){ TelaSignUp(controleDeNavegacao) }
                     composable(route = "home"){ telaHome(controleDeNavegacao)}
 
                 }
